@@ -12,6 +12,8 @@ test_url_index = 0
 test_url_list = []
 test_url_list.append("https://www.hamimall.com.tw/product.php?id=522727&utm_source=hamipoint&utm_medium=productlist_rec&utm_campaign=pointpoint&utm_content=522727")
 test_url_list.append("https://online.senao.com.tw/mart/1348423")
+test_url_list.append("https://www.cht.com.tw/home/consumer")
+test_url_list.append("https://www.momoshop.com.tw/main/Main.jsp")
 
 output_mdfile_raw = "./outputs/hamipoints_raw.md"
 output_mdfile_fit = "./outputs/hamipoints_fit.md"

@@ -4,4 +4,9 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "crawl4ai>=0.8.6",
+    "docling[easyocr]>=2.95.0",
+    "langchain-community>=0.4.2",
+    "langchain-ollama>=1.1.0",
+]
