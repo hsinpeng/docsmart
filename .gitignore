@@ -1,5 +1,29 @@
 outputs/
 
+# ======= macOS system =======
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icons
+._*
+Icon?
+.VolumeIcon.icns
+
+# ======= Extra storage and logs =======
+.Spotlight-V100
+.Trashes
+.fseventsd
+.DocumentRevisions-V100
+.TemporaryItems
+
+# ======= Network sharing（AFP） =======
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

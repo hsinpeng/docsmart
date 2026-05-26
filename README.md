@@ -10,7 +10,7 @@ Intelligent information extraction from various document source.
 - [License](#license)
 
 ## 📖 Project Overview
-This repository contains a growing collection of **out-of-the-box tools* and **hands-on examples** demonstrating how to extract information effectively from documents based-on the following techniques:
+This repository contains a growing collection of **out-of-the-box tools** and **hands-on examples** demonstrating how to extract information effectively from documents based-on the following techniques:
 
 * 🔍 Intelligent web crawling
 * 🧠 LLM-powered extraction
@@ -27,7 +27,7 @@ This repository contains a growing collection of **out-of-the-box tools* and **h
 * **Web Scraping**: [Crawl4AI](https://github.com/unclecode/crawl4ai "Crawl4AI GitHub")
 * **Document Processing**: [Docling](https://github.com/docling-project/docling "Docling GitHub")
 * **LLM Server**: [Ollama](https://ollama.com/ "Ollama Official Site")
-* **LLM Frameworks**: [LangChain](https://github.com/langchain-ai/langchain "LangChain GitHub") / [LlamaIndex](https://github.com/run-llama/llama_index "LlamaIndex GitHub") (for RAG examples)
+* **LLM Frameworks**: [LangChain](https://github.com/langchain-ai/langchain "LangChain GitHub")
 
 ## 🚀 Getting Started
 
