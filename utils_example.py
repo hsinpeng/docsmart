@@ -1,13 +1,34 @@
+import os
 from utils import (extract_urls, extract_image_urls, determine_type, generate_title, generate_image_description)
 
-run_option = 1
-markdown_file = "./outputs/docling_output.md"
+run_option = 0
+markdown_file = "./outputs/crawl4ai_output_fit.md" # "./outputs/crawl4ai_output_fit.md" "./outputs/crawl4ai_output_raw.md" "./outputs/docling_output.md"
 
 def main():
     try:
+        if os.path.exists(markdown_file):
+            print(f"Hello. This is utility test. The run_option is {run_option}.")
+        else:
+            print(f"Error: File {markdown_file} does not exist.")
+            return
+
         match run_option:
             case 0:
-                print("----- Utility Test -----")
+                print("----- Utility Test: extract_urls and extract_image_urls -----")
+                with open(markdown_file, "r", encoding="utf-8") as f:
+                    markdown_content = f.read()
+                url_list = extract_urls(markdown_content, rm_redundancy=False)
+                if url_list is not None:
+                    print(f"----- URLs ({len(url_list)}) with Redundancy -----")
+                    for url in url_list:
+                        print(url)
+                else:
+                    print("Error: extract_urls_from_file() Fail!") 
+                url_list = extract_image_urls(markdown_content, rm_redundancy=True)
+                if url_list is not None:
+                    print(f"----- Image URLs ({len(url_list)}) without Redundancy -----")
+                    for url in url_list:
+                        print(url)
 
             case 1:
                 print("----- Utility Test: determine_type and generate_title -----")
