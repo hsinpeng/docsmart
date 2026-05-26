@@ -1,14 +1,10 @@
 outputs/
+secrets/
 
-# ======= macOS system =======
+# ======= macOS folder =======
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Icons
-._*
-Icon?
-.VolumeIcon.icns
 
 # ======= Extra storage and logs =======
 .Spotlight-V100

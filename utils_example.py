@@ -1,4 +1,4 @@
-import os
+import os, time
 from utils import (extract_urls, extract_image_urls, determine_type, generate_title, generate_image_description)
 
 run_option = 0
@@ -34,9 +34,16 @@ def main():
                 print("----- Utility Test: determine_type and generate_title -----")
                 with open(markdown_file, "r", encoding="utf-8") as f:
                     markdown_content = f.read()
+                start_time = time.time()
                 page_type = determine_type(markdown_content)
+                end_time = time.time() - start_time
+                print(f"determine_type() in {end_time:.2f} seconds.")  
                 print(f"----- Web Type: {page_type} -----")
+                print(f"-----------------------------------------")
+                start_time = time.time()
                 page_title = generate_title(markdown_content)
+                end_time = time.time() - start_time
+                print(f"generate_title() in {end_time:.2f} seconds.") 
                 print(f"----- Web Title: {page_title} -----")
             
             case 2:
@@ -47,8 +54,13 @@ def main():
                 for url in img_url_list:
                     print(url)
                 print(f"--- Image description of {img_url_list[0]} ---")
+                start_time = time.time()
                 image_description = generate_image_description(img_url_list[0])
+                end_time = time.time() - start_time
                 print(image_description)
+                print(f"-----------------------------------------")
+                print(f"generate_image_description() in {end_time:.2f} seconds.") 
+                print(f"-----------------------------------------")
 
             case _:
                 print(f"Error: Unknown run_option ({run_option})!") # Wildcard (default case)
