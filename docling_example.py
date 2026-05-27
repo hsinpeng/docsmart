@@ -14,7 +14,7 @@ from docling.datamodel.pipeline_options import (
 )
 from docling_core.types.doc import ImageRefMode, PictureItem, TableItem
 
-run_option = 3
+run_option = 2
 test_url_index = 0
 test_url_list = []
 test_url_list.append("https://www.hamimall.com.tw/product.php?id=522727&utm_source=hamipoint&utm_medium=productlist_rec&utm_campaign=pointpoint&utm_content=522727")
@@ -117,7 +117,8 @@ async def main():
                 print(f"Document converted and files exported in {end_time:.2f} seconds.")
 
             case 1:
-                input_doc_path = "./inputs/Fan01.pdf"
+                # input_doc_path = "./inputs/Fan01.pdf"
+                input_doc_path = "./inputs/38xx_ct.pdf"
                 output_prefix = "./outputs/no-ocr"
                 if os.path.exists(input_doc_path):
                     print("----- Docling DocumentConverter with PdfPipeline (No OCR) -----")
@@ -153,7 +154,8 @@ async def main():
                 print(f"Document converted and images/files exported in {end_time:.2f} seconds.")
             
             case 2:
-                input_doc_path = "./inputs/Fan01.pdf"
+                # input_doc_path = "./inputs/Fan01.pdf"
+                input_doc_path = "./inputs/38xx_ct.pdf"
                 output_prefix = "./outputs/ocr"
                 if os.path.exists(input_doc_path):
                     print("----- Docling DocumentConverter with PdfPipeline + EasyOcr + TableStructure -----")
