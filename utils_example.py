@@ -38,13 +38,14 @@ def main():
                 page_type = determine_type(markdown_content)
                 end_time = time.time() - start_time
                 print(f"determine_type() in {end_time:.2f} seconds.")  
-                print(f"----- Web Type: {page_type} -----")
+                print(f"Web Type: {page_type}")
                 print(f"-----------------------------------------")
                 start_time = time.time()
                 page_title = generate_title(markdown_content)
                 end_time = time.time() - start_time
                 print(f"generate_title() in {end_time:.2f} seconds.") 
-                print(f"----- Web Title: {page_title} -----")
+                print(f"Web Title: {page_title}")
+                print(f"-----------------------------------------")
             
             case 2:
                 print("----- Utility Test: generate_image_description -----")

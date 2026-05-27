@@ -1,4 +1,4 @@
-import asyncio, json
+import asyncio, json, time
 from pydantic import BaseModel, Field
 from typing import Annotated
 from crawl4ai import (AsyncWebCrawler, BrowserConfig, CrawlerRunConfig, CacheMode, AdaptiveConfig, 
@@ -30,7 +30,10 @@ async def main():
                 # Create an instance of AsyncWebCrawler
                 async with AsyncWebCrawler() as crawler:
                     # Run the crawler on a URL
+                    start_time = time.time()
                     result = await crawler.arun(url=target_url)
+                    end_time = time.time() - start_time
+                    print(f"Crawler run in {end_time:.2f} seconds.")
                     # Print the extracted content
                     if result.success:
                         print("Markdown length:", len(result.markdown))
@@ -48,10 +51,13 @@ async def main():
                 )
                 # Create an instance of AsyncWebCrawler
                 async with AsyncWebCrawler(config=browser_conf) as crawler:
+                    start_time = time.time()
                     result = await crawler.arun(
                         url=target_url,
                         config=run_conf
                     )
+                    end_time = time.time() - start_time
+                    print(f"Crawler run in {end_time:.2f} seconds.")
                     # Print the extracted content
                     if result.success:
                         print("Markdown length:", len(result.markdown))
@@ -73,10 +79,13 @@ async def main():
                 # Create an instance of AsyncWebCrawler
                 async with AsyncWebCrawler() as crawler:
                     # Run the crawler on a URL
+                    start_time = time.time()
                     result = await crawler.arun(
                         url=target_url,
                         config=run_conf,
                     )
+                    end_time = time.time() - start_time
+                    print(f"Crawler run in {end_time:.2f} seconds.")
                     # Print the extracted content
                     if result.success:
                         markdown_content = result.markdown.fit_markdown # Access fit markdown (if filters were used)
@@ -121,10 +130,12 @@ async def main():
                     adaptive = AdaptiveCrawler(crawler, config)
 
                     # Start adaptive crawling
+                    start_time = time.time()
                     result = await adaptive.digest(
                         start_url=target_url,
                         query="shopping website"
                     )
+                    end_time = time.time() - start_time
 
                     # View results
                     print("--- Statistics ---")
@@ -143,7 +154,8 @@ async def main():
                     relevant_pages = adaptive.get_relevant_content(top_k=3)
                     for page in relevant_pages:
                         print(f"URL: {page['url']} | Relevant: {page['score']:.2%}")
-                        print(f"Abstrat: {page['content'][:100]}...") 
+                        print(f"Abstrat: {page['content'][:100]}...")
+                    print(f"Adaptive-crawler(Statistical) run in {end_time:.2f} seconds.")
             
             case 4:
                 target_url = test_url_list[test_url_index]
@@ -177,12 +189,14 @@ async def main():
                     adaptive = AdaptiveCrawler(crawler, config)
 
                     # Start adaptive crawling
+                    start_time = time.time()
                     result = await adaptive.digest(
                         # start_url="https://docs.python.org/3/",
                         # query="async context managers"
                         start_url=target_url,
                         query="shopping website"
                     )
+                    end_time = time.time() - start_time
 
                     # View results
                     print("--- Statistics ---")
@@ -201,7 +215,8 @@ async def main():
                     relevant_pages = adaptive.get_relevant_content(top_k=3)
                     for page in relevant_pages:
                         print(f"URL: {page['url']} | Relevant: {page['score']:.2%}")
-                        print(f"Abstrat: {page['content'][:100]}...") 
+                        print(f"Abstrat: {page['content'][:100]}...")
+                    print(f"Adaptive-crawler(Embedding) run in {end_time:.2f} seconds.")
 
             case 5:
                 print("----- Multi-URL Concurrency -----")
@@ -211,6 +226,7 @@ async def main():
                 )
                 is_stream:bool = True
                 async with AsyncWebCrawler() as crawler:
+                    start_time = time.time()
                     if is_stream:
                         # Streaming mode: Stream results as they complete
                         async for result in await crawler.arun_many(test_url_list, config=run_conf):
@@ -227,6 +243,8 @@ async def main():
                                 print(f"[OK] {res.url}, length: {len(res.markdown.raw_markdown)}")
                             else:
                                 print(f"[ERROR] {res.url} => {res.error_message}")
+                    end_time = time.time() - start_time
+                    print(f"Multi-crawler run in {end_time:.2f} seconds.")
 
             case 6:
                 print("----- Extract Subject(Type) and Title from URL -----")
@@ -268,12 +286,15 @@ async def main():
 
                 browser_config = BrowserConfig(headless=True)
                 async with AsyncWebCrawler(config=browser_config) as crawler:
+                    start_time = time.time()
                     result = await crawler.arun(
                         url=target_url, config=crawler_config
                     )
+                    end_time = time.time() - start_time
                     json_result = json.loads(result.extracted_content)
                     print(f"Page Type: {json_result[0]['page_type']}")
                     print(f"Page Title: {json_result[0]['page_title']}")
+                    print(f"Crawler(LLM Extraction) run in {end_time:.2f} seconds.") 
 
             case _:
                 print(f"Error: Unknown run_option ({run_option})!") # Wildcard (default case)
