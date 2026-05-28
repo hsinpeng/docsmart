@@ -64,7 +64,7 @@ def main():
                 print(f"-----------------------------------------")
 
             case _:
-                print(f"Error: Unknown run_option ({run_option})!") # Wildcard (default case)
+                print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
         
     except Exception as e:
         print(f"Unknown Error: {e}") 

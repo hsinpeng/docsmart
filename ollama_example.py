@@ -92,7 +92,7 @@ def main():
                 messages.append(response) # Add AI response to history to maintain context
         
         case _:
-            print(f"Error: Unknown run_option ({run_option})!") # Wildcard (default case)
+            print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
     
 
 

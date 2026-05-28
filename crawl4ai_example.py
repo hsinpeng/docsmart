@@ -297,7 +297,7 @@ async def main():
                     print(f"Crawler(LLM Extraction) run in {end_time:.2f} seconds.") 
 
             case _:
-                print(f"Error: Unknown run_option ({run_option})!") # Wildcard (default case)
+                print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
         
     except Exception as e:
         print(f"Unknown Error: {e}") 

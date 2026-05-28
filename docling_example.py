@@ -8,13 +8,14 @@ from docling.datamodel.base_models import InputFormat
 from docling.datamodel.document import ConversionResult
 from docling.datamodel.pipeline_options import (
     PdfPipelineOptions,
+    PaginatedPipelineOptions,
     EasyOcrOptions,
     TableStructureOptions,
     AcceleratorOptions
 )
 from docling_core.types.doc import ImageRefMode, PictureItem, TableItem
 
-run_option = 2
+run_option = 0
 test_url_index = 0
 test_url_list = []
 test_url_list.append("https://www.hamimall.com.tw/product.php?id=522727&utm_source=hamipoint&utm_medium=productlist_rec&utm_campaign=pointpoint&utm_content=522727")
@@ -197,7 +198,7 @@ async def main():
 
             case 3:
                 target_url = test_url_list[test_url_index]
-                output_prefix = "./outputs/url-ocr"
+                output_prefix = "./outputs/crawl4ai-ocr"
                 pdf_temp = f"{output_prefix}-temp.pdf"
                 print("----- Docling DocumentConverter + Crawl4AI AsyncWebCrawler -----")
                 ##### Crawl4AI #####
@@ -269,24 +270,22 @@ async def main():
                 # else:
                 #     print(f"Error: File {pdf_temp} does not exist.")
 
-            case 100:
-                print("----- AI converter with Gemini -----")
-
-            case 101: # No Good
+            case 101: # No good. OCR and images extraction are not working.
                 target_url = test_url_list[test_url_index]
-                print("----- Basic DocumentConverter with HTMLFormatOption -----")
+                output_prefix = "./outputs/url-no-ocr"
+                print("----- DocumentConverter with HTMLFormatOption -----")
                 if is_macOS:
                     # Docling Parse Pipeline with EasyOCR (CPU only)
                     accelerator_options = AcceleratorOptions(device="cpu")
-                    pipeline_options = PdfPipelineOptions(accelerator_options=accelerator_options)
+                    pipeline_options = PaginatedPipelineOptions(accelerator_options=accelerator_options)
                 else:
-                    pipeline_options = PdfPipelineOptions()
-                pipeline_options.do_ocr = True # Enable OCR
-                pipeline_options.ocr_options = EasyOcrOptions() # Use EasyOCR
-                pipeline_options.ocr_options.lang = ["en", "ch_tra"]
-                pipeline_options.ocr_options.force_full_page_ocr = True
-                pipeline_options.do_table_structure = True
-                pipeline_options.table_structure_options = TableStructureOptions(do_cell_matching=True)
+                    pipeline_options = PaginatedPipelineOptions()
+                # pipeline_options.do_ocr = True # Enable OCR
+                # pipeline_options.ocr_options = EasyOcrOptions() # Use EasyOCR
+                # pipeline_options.ocr_options.lang = ["en", "ch_tra"]
+                # pipeline_options.ocr_options.force_full_page_ocr = True
+                # pipeline_options.do_table_structure = True
+                # pipeline_options.table_structure_options = TableStructureOptions(do_cell_matching=True)
                 pipeline_options.images_scale = 2.0
                 pipeline_options.generate_page_images = True
                 pipeline_options.generate_picture_images = True
@@ -296,11 +295,19 @@ async def main():
                         InputFormat.HTML: HTMLFormatOption(pipeline_options=pipeline_options)
                     }
                 )
+                start_time = time.time()
                 conv_res = converter.convert(target_url)       
-                print("Docling Technical Report:", len(conv_res.document.export_to_markdown()))
+                end_time = time.time() - start_time
+                print(f"URL converted in {end_time:.2f} seconds.")
+                
+                # save_page_images(conv_res, output_prefix) # Save page images
+                # save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
+                save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
+                end_time = time.time() - start_time
+                print(f"URL converted and images/files exported in {end_time:.2f} seconds.")
             
             case _:
-                print(f"Error: Unknown run_option ({run_option})!") # Wildcard (default case)
+                print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
 
     except Exception as e:
         print(f"Unknown Error:{e}")   
