@@ -300,7 +300,10 @@ async def main():
                 print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
         
     except Exception as e:
-        print(f"Unknown Error: {e}") 
+        print(f"Unknown Error: {e}")
+
+    finally: # This ALWAYS runs, ensuring every resource is closed even if an error occurs
+        pass
 
 
 if __name__ == "__main__":

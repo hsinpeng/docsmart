@@ -1,4 +1,5 @@
-import re, requests, base64
+import re, requests, base64, random, string
+from PIL import Image
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -8,7 +9,7 @@ ollama_embed = "qwen3-embedding:latest" # "qwen3-embedding:latest" "nomic-embed-
 supported_image_formats = ('.jpg', '.jpeg', '.png')
 
 
-def check_image(image_uri:str):
+def check_image(image_uri:str) -> bool:
     """
     Identify whether the given uri is an image or not.
     """
@@ -16,6 +17,29 @@ def check_image(image_uri:str):
         return True
     else:
         return False
+
+
+def convert_image2pdf(image_paht:str, pdf_path:str) -> bool:
+    """
+    Convert the image file to PDF.
+    """
+    if (check_image(image_paht)) and (pdf_path.lower().endswith(".pdf")):
+        image = Image.open(image_paht) # Open the image file
+        image_rgb = image.convert("RGB") # Convert to RGB (required for JPG to PDF conversion)
+        image_rgb.save(pdf_path) # Save as PDF
+        return True
+    else:
+        return False
+
+def gen_random_string(length:int=10, is_punctuation:bool=False) -> str:
+    """
+    Generate a random string of a specific length.
+    """
+    if is_punctuation:
+        characters = string.ascii_letters + string.digits + string.punctuation
+    else: 
+        characters = string.ascii_letters + string.digits
+    return ''.join(random.choices(characters, k=length))
 
 
 def encode_image_file(image_path:str):

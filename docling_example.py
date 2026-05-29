@@ -14,8 +14,9 @@ from docling.datamodel.pipeline_options import (
     AcceleratorOptions
 )
 from docling_core.types.doc import ImageRefMode, PictureItem, TableItem
+from utils import check_image, gen_random_string, convert_image2pdf
 
-run_option = 0
+run_option = 2
 test_url_index = 0
 test_url_list = []
 test_url_list.append("https://www.hamimall.com.tw/product.php?id=522727&utm_source=hamipoint&utm_medium=productlist_rec&utm_campaign=pointpoint&utm_content=522727")
@@ -24,6 +25,7 @@ test_url_list.append("https://www.cht.com.tw/home/consumer")
 test_url_list.append("https://www.momoshop.com.tw/main/Main.jsp")
 
 output_mdfile_docling = "./outputs/docling_output.md"
+temporary_pdf = f"./outputs/{gen_random_string(length=15)}.pdf"
 
 
 def save_page_images(conv_result:ConversionResult, filepath_prefix:str):
@@ -117,15 +119,27 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"Document converted and files exported in {end_time:.2f} seconds.")
 
-            case 1:
-                # input_doc_path = "./inputs/Fan01.pdf"
-                input_doc_path = "./inputs/38xx_ct.pdf"
+            case 1: ## PdfPipeline (No OCR)
+                input_doc_path = "./inputs/Fan01.jpg"
+                # input_doc_path = "./inputs/38xx_ct.pdf"
                 output_prefix = "./outputs/no-ocr"
                 if os.path.exists(input_doc_path):
                     print("----- Docling DocumentConverter with PdfPipeline (No OCR) -----")
                 else:
                     print(f"Error: File {input_doc_path} does not exist.")
                     return
+                
+                # Image processing for PdfPipeline
+                if check_image(input_doc_path):
+                    if convert_image2pdf(input_doc_path, temporary_pdf):
+                        input_doc_path = temporary_pdf
+                    else:
+                        print(f"Error: Connot convert {input_doc_path} to PDF.")
+                        return
+                if not (input_doc_path.lower().endswith(".pdf")):
+                    print(f"Error: Connot find {input_doc_path}.")
+                    return
+
                 # Docling Parse Pipeline without EasyOCR
                 if is_macOS:
                     # Docling Parse Pipeline with EasyOCR (CPU only)
@@ -154,15 +168,27 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"Document converted and images/files exported in {end_time:.2f} seconds.")
             
-            case 2:
-                # input_doc_path = "./inputs/Fan01.pdf"
-                input_doc_path = "./inputs/38xx_ct.pdf"
+            case 2: ## PdfPipeline (with OCR)
+                input_doc_path = "./inputs/Fan01.jpg"
+                # input_doc_path = "./inputs/38xx_ct.pdf"
                 output_prefix = "./outputs/ocr"
                 if os.path.exists(input_doc_path):
                     print("----- Docling DocumentConverter with PdfPipeline + EasyOcr + TableStructure -----")
                 else:
                     print(f"Error: File {input_doc_path} does not exist.")
                     return
+                
+                # Image processing for PdfPipeline
+                if check_image(input_doc_path):
+                    if convert_image2pdf(input_doc_path, temporary_pdf):
+                        input_doc_path = temporary_pdf
+                    else:
+                        print(f"Error: Connot convert {input_doc_path} to PDF.")
+                        return
+                if not (input_doc_path.lower().endswith(".pdf")):
+                    print(f"Error: Connot find {input_doc_path}.")
+                    return
+                
                 if is_macOS:
                     # Docling Parse Pipeline with EasyOCR (CPU only)
                     accelerator_options = AcceleratorOptions(device="cpu")
@@ -229,7 +255,6 @@ async def main():
                 print(f"Web crawlered and PDF converted in {end_time:.2f} seconds.")
                 
                 ##### Docling #####
-                # Docling Parse Pipeline with EasyOCR (CPU only)
                 if is_macOS:
                     # Docling Parse Pipeline with EasyOCR (CPU only)
                     accelerator_options = AcceleratorOptions(device="cpu")
@@ -263,14 +288,43 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"Document converted and images/files exported in {end_time:.2f} seconds.")
 
-                ##### Clean up #####
-                # if os.path.exists(pdf_temp):
-                #     os.remove(pdf_temp)
-                #     print(f"File {pdf_temp} deleted successfully.")
-                # else:
-                #     print(f"Error: File {pdf_temp} does not exist.")
+            case 101: # No good. OCR and images extraction are not working to HTML or docx.
+                target_url = test_url_list[test_url_index]
+                output_prefix = "./outputs/url-no-ocr"
+                print("----- DocumentConverter with HTMLFormatOption -----")
+                if is_macOS:
+                    # Docling Parse Pipeline with EasyOCR (CPU only)
+                    accelerator_options = AcceleratorOptions(device="cpu")
+                    pipeline_options = PdfPipelineOptions(accelerator_options=accelerator_options)
+                else:
+                    pipeline_options = PdfPipelineOptions()
+                pipeline_options.do_ocr = True # Enable OCR
+                pipeline_options.ocr_options = EasyOcrOptions() # Use EasyOCR
+                pipeline_options.ocr_options.lang = ["en", "ch_tra"]
+                pipeline_options.ocr_options.force_full_page_ocr = True
+                pipeline_options.do_table_structure = True
+                pipeline_options.table_structure_options = TableStructureOptions(do_cell_matching=True)
+                pipeline_options.images_scale = 2.0
+                pipeline_options.generate_page_images = True
+                pipeline_options.generate_picture_images = True
 
-            case 101: # No good. OCR and images extraction are not working.
+                converter = DocumentConverter(
+                    format_options={
+                        InputFormat.HTML: HTMLFormatOption(pipeline_options=pipeline_options)
+                    }
+                )
+                start_time = time.time()
+                conv_res = converter.convert(target_url)       
+                end_time = time.time() - start_time
+                print(f"URL converted in {end_time:.2f} seconds.")
+                
+                # save_page_images(conv_res, output_prefix) # Save page images
+                # save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
+                save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
+                end_time = time.time() - start_time
+                print(f"URL converted and images/files exported in {end_time:.2f} seconds.")
+
+            case 102: # No good. OCR and images extraction are not working to HTML or docx.
                 target_url = test_url_list[test_url_index]
                 output_prefix = "./outputs/url-no-ocr"
                 print("----- DocumentConverter with HTMLFormatOption -----")
@@ -280,12 +334,6 @@ async def main():
                     pipeline_options = PaginatedPipelineOptions(accelerator_options=accelerator_options)
                 else:
                     pipeline_options = PaginatedPipelineOptions()
-                # pipeline_options.do_ocr = True # Enable OCR
-                # pipeline_options.ocr_options = EasyOcrOptions() # Use EasyOCR
-                # pipeline_options.ocr_options.lang = ["en", "ch_tra"]
-                # pipeline_options.ocr_options.force_full_page_ocr = True
-                # pipeline_options.do_table_structure = True
-                # pipeline_options.table_structure_options = TableStructureOptions(do_cell_matching=True)
                 pipeline_options.images_scale = 2.0
                 pipeline_options.generate_page_images = True
                 pipeline_options.generate_picture_images = True
@@ -310,7 +358,11 @@ async def main():
                 print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
 
     except Exception as e:
-        print(f"Unknown Error:{e}")   
+        print(f"Unknown Error:{e}")
+
+    finally: # This ALWAYS runs, ensuring every resource is closed even if an error occurs
+        if os.path.exists(temporary_pdf) and os.path.isfile(temporary_pdf):
+            os.remove(temporary_pdf)
                 
 if __name__ == "__main__":
     asyncio.run(main())
