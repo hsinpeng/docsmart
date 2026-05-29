@@ -3,13 +3,12 @@ from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_community.utils.math import cosine_similarity
 
-run_option = 3
-
 ollama_server = "http://localhost:11434"
 ollama_model = "granite4.1:8b"
 ollama_embed = "qwen3-embedding:latest" # "nomic-embed-text-v2-moe:latest"
 
 def main():
+    run_option = 3
     print("Hello from ollama-test!")
     try:
         match run_option:

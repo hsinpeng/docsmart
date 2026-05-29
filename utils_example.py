@@ -1,10 +1,10 @@
 import os, time
 from utils import (extract_urls, extract_image_urls, determine_type, generate_title, generate_image_description)
 
-run_option = 0
 markdown_file = "./outputs/crawl4ai_output_fit.md" # "./outputs/crawl4ai_output_fit.md" "./outputs/crawl4ai_output_raw.md" "./outputs/docling_output.md"
 
 def main():
+    run_option = 0
     try:
         if os.path.exists(markdown_file):
             print(f"Hello. This is utility test. The run_option is {run_option}.")

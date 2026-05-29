@@ -16,17 +16,14 @@ from docling.datamodel.pipeline_options import (
 from docling_core.types.doc import ImageRefMode, PictureItem, TableItem
 from utils import check_image, gen_random_string, convert_image2pdf
 
-run_option = 2
-test_url_index = 0
+output_mdfile_docling = "./outputs/docling_output.md"
+temporary_pdf = f"./outputs/{gen_random_string(length=15)}.pdf"
+
 test_url_list = []
 test_url_list.append("https://www.hamimall.com.tw/product.php?id=522727&utm_source=hamipoint&utm_medium=productlist_rec&utm_campaign=pointpoint&utm_content=522727")
 test_url_list.append("https://online.senao.com.tw/mart/1348423")
 test_url_list.append("https://www.cht.com.tw/home/consumer")
 test_url_list.append("https://www.momoshop.com.tw/main/Main.jsp")
-
-output_mdfile_docling = "./outputs/docling_output.md"
-temporary_pdf = f"./outputs/{gen_random_string(length=15)}.pdf"
-
 
 def save_page_images(conv_result:ConversionResult, filepath_prefix:str):
     # Save page images
@@ -87,6 +84,11 @@ def save_conversion_result(conv_result:ConversionResult, filepath_prefix:str,
 
 
 async def main():
+    run_option = 2
+    test_url_index = 0
+    is_save_images = False
+    is_save_md_ref_only = True
+
     # Check operating system (OS)
     if sys.platform.startswith('win'):
         print("Operating System: Windows")
@@ -115,7 +117,10 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"Document converted in {end_time:.2f} seconds.")      
 
-                save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
+                if is_save_md_ref_only:
+                    save_conversion_result(conv_res, output_prefix, file_type="markdown")
+                else:
+                    save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
                 end_time = time.time() - start_time
                 print(f"Document converted and files exported in {end_time:.2f} seconds.")
 
@@ -129,7 +134,7 @@ async def main():
                     print(f"Error: File {input_doc_path} does not exist.")
                     return
                 
-                # Image processing for PdfPipeline
+                # Image conversion for PdfPipeline
                 if check_image(input_doc_path):
                     if convert_image2pdf(input_doc_path, temporary_pdf):
                         input_doc_path = temporary_pdf
@@ -162,9 +167,13 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"Document converted in {end_time:.2f} seconds.")
 
-                save_page_images(conv_res, output_prefix) # Save page images
-                save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
-                save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
+                if is_save_images:
+                    save_page_images(conv_res, output_prefix) # Save page images
+                    save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
+                if is_save_md_ref_only:
+                    save_conversion_result(conv_res, output_prefix, file_type="markdown")
+                else:
+                    save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
                 end_time = time.time() - start_time
                 print(f"Document converted and images/files exported in {end_time:.2f} seconds.")
             
@@ -178,7 +187,7 @@ async def main():
                     print(f"Error: File {input_doc_path} does not exist.")
                     return
                 
-                # Image processing for PdfPipeline
+                # Image conversion for PdfPipeline
                 if check_image(input_doc_path):
                     if convert_image2pdf(input_doc_path, temporary_pdf):
                         input_doc_path = temporary_pdf
@@ -216,9 +225,13 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"Document converted in {end_time:.2f} seconds.")
                 
-                save_page_images(conv_res, output_prefix) # Save page images
-                save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
-                save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
+                if is_save_images:
+                    save_page_images(conv_res, output_prefix) # Save page images
+                    save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
+                if is_save_md_ref_only:
+                    save_conversion_result(conv_res, output_prefix, file_type="markdown")
+                else:
+                    save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
                 end_time = time.time() - start_time
                 print(f"Document converted and images/files exported in {end_time:.2f} seconds.")
 
@@ -282,9 +295,13 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"Document converted in {end_time:.2f} seconds.")
                 
-                save_page_images(conv_res, output_prefix) # Save page images
-                save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
-                save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
+                if is_save_images:
+                    save_page_images(conv_res, output_prefix) # Save page images
+                    save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
+                if is_save_md_ref_only:
+                    save_conversion_result(conv_res, output_prefix, file_type="markdown")
+                else:
+                    save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
                 end_time = time.time() - start_time
                 print(f"Document converted and images/files exported in {end_time:.2f} seconds.")
 
@@ -318,9 +335,13 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"URL converted in {end_time:.2f} seconds.")
                 
-                # save_page_images(conv_res, output_prefix) # Save page images
-                # save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
-                save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
+                if is_save_images:
+                    save_page_images(conv_res, output_prefix) # Save page images
+                    save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
+                if is_save_md_ref_only:
+                    save_conversion_result(conv_res, output_prefix, file_type="markdown")
+                else:
+                    save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
                 end_time = time.time() - start_time
                 print(f"URL converted and images/files exported in {end_time:.2f} seconds.")
 
@@ -348,9 +369,13 @@ async def main():
                 end_time = time.time() - start_time
                 print(f"URL converted in {end_time:.2f} seconds.")
                 
-                # save_page_images(conv_res, output_prefix) # Save page images
-                # save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
-                save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
+                if is_save_images:
+                    save_page_images(conv_res, output_prefix) # Save page images
+                    save_table_figure_images(conv_res, output_prefix) # Save images of figures and tables
+                if is_save_md_ref_only:
+                    save_conversion_result(conv_res, output_prefix, file_type="markdown")
+                else:
+                    save_conversion_result(conv_res, output_prefix) # Save result to markdown or html
                 end_time = time.time() - start_time
                 print(f"URL converted and images/files exported in {end_time:.2f} seconds.")
             

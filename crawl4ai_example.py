@@ -7,21 +7,22 @@ from crawl4ai.content_filter_strategy import PruningContentFilter
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from utils import (extract_urls, extract_image_urls, determine_type, generate_title, generate_image_description)
 
-run_option = 2
-test_url_index = 0
+output_mdfile_raw = "./outputs/crawl4ai_output_raw.md"
+output_mdfile_fit = "./outputs/crawl4ai_output_fit.md"
+
 test_url_list = []
 test_url_list.append("https://www.hamimall.com.tw/product.php?id=522727&utm_source=hamipoint&utm_medium=productlist_rec&utm_campaign=pointpoint&utm_content=522727")
 test_url_list.append("https://online.senao.com.tw/mart/1348423")
 test_url_list.append("https://www.cht.com.tw/home/consumer")
 test_url_list.append("https://www.momoshop.com.tw/main/Main.jsp")
 
-output_mdfile_raw = "./outputs/crawl4ai_output_raw.md"
-output_mdfile_fit = "./outputs/crawl4ai_output_fit.md"
-
 ollama_model = "ollama/granite4.1:8b" # "ollama/qwen3.5:9b" "ollama/granite4.1:8b"
 ollama_embed = "ollama/qwen3-embedding:latest" # "ollama/qwen3-embedding:latest" "ollama/nomic-embed-text-v2-moe:latest"
 
+
 async def main():
+    run_option = 2
+    test_url_index = 0
     try:
         match run_option:
             case 0:
