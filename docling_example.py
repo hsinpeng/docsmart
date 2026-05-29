@@ -128,11 +128,6 @@ async def main():
                 input_doc_path = "./inputs/Fan01.jpg"
                 # input_doc_path = "./inputs/38xx_ct.pdf"
                 output_prefix = "./outputs/no-ocr"
-                if os.path.exists(input_doc_path):
-                    print("----- Docling DocumentConverter with PdfPipeline (No OCR) -----")
-                else:
-                    print(f"Error: File {input_doc_path} does not exist.")
-                    return
                 
                 # Image conversion for PdfPipeline
                 if check_image(input_doc_path):
@@ -141,8 +136,11 @@ async def main():
                     else:
                         print(f"Error: Connot convert {input_doc_path} to PDF.")
                         return
-                if not (input_doc_path.lower().endswith(".pdf")):
-                    print(f"Error: Connot find {input_doc_path}.")
+                    
+                if input_doc_path.lower().endswith(".pdf") and os.path.isfile(input_doc_path):
+                    print("----- Docling DocumentConverter with PdfPipeline (No OCR) -----")
+                else:
+                    print(f"Error: File {input_doc_path} is not valid.")
                     return
 
                 # Docling Parse Pipeline without EasyOCR
@@ -181,12 +179,7 @@ async def main():
                 input_doc_path = "./inputs/Fan01.jpg"
                 # input_doc_path = "./inputs/38xx_ct.pdf"
                 output_prefix = "./outputs/ocr"
-                if os.path.exists(input_doc_path):
-                    print("----- Docling DocumentConverter with PdfPipeline + EasyOcr + TableStructure -----")
-                else:
-                    print(f"Error: File {input_doc_path} does not exist.")
-                    return
-                
+
                 # Image conversion for PdfPipeline
                 if check_image(input_doc_path):
                     if convert_image2pdf(input_doc_path, temporary_pdf):
@@ -194,8 +187,11 @@ async def main():
                     else:
                         print(f"Error: Connot convert {input_doc_path} to PDF.")
                         return
-                if not (input_doc_path.lower().endswith(".pdf")):
-                    print(f"Error: Connot find {input_doc_path}.")
+                    
+                if input_doc_path.lower().endswith(".pdf") and os.path.isfile(input_doc_path):
+                    print("----- Docling DocumentConverter with PdfPipeline + EasyOcr + TableStructure -----")
+                else:
+                    print(f"Error: File {input_doc_path} is not valid.")
                     return
                 
                 if is_macOS:
