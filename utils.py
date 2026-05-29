@@ -19,14 +19,14 @@ def check_image(image_uri:str) -> bool:
         return False
 
 
-def convert_image2pdf(image_paht:str, pdf_path:str) -> bool:
+def convert_image2pdf(image_path:str, pdf_path:str) -> bool:
     """
     Convert the image file to PDF.
     """
-    if (check_image(image_paht)) and (pdf_path.lower().endswith(".pdf")):
-        image = Image.open(image_paht) # Open the image file
+    if (check_image(image_path)) and (pdf_path.lower().endswith(".pdf")):
+        image = Image.open(image_path) # Open the image file
         image_rgb = image.convert("RGB") # Convert to RGB (required for JPG to PDF conversion)
-        image_rgb.save(pdf_path) # Save as PDF
+        image_rgb.save(pdf_path, "PDF") # Save as PDF
         return True
     else:
         return False

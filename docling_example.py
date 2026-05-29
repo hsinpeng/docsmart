@@ -125,7 +125,8 @@ async def main():
                 print(f"Document converted and files exported in {end_time:.2f} seconds.")
 
             case 1: ## PdfPipeline (No OCR)
-                input_doc_path = "./inputs/Fan01.jpg"
+                input_doc_path = "./inputs/crawl4ai_output.png"
+                # input_doc_path = "./inputs/Fan01.jpg"
                 # input_doc_path = "./inputs/38xx_ct.pdf"
                 output_prefix = "./outputs/no-ocr"
                 
@@ -176,7 +177,8 @@ async def main():
                 print(f"Document converted and images/files exported in {end_time:.2f} seconds.")
             
             case 2: ## PdfPipeline (with OCR)
-                input_doc_path = "./inputs/Fan01.jpg"
+                input_doc_path = "./inputs/crawl4ai_output.pdf"
+                # input_doc_path = "./inputs/Fan01.jpg"
                 # input_doc_path = "./inputs/38xx_ct.pdf"
                 output_prefix = "./outputs/ocr"
 

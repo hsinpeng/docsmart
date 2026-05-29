@@ -1,4 +1,6 @@
-import asyncio, json, time
+import io, asyncio, json, time
+from PIL import Image
+from base64 import b64decode
 from pydantic import BaseModel, Field
 from typing import Annotated
 from crawl4ai import (AsyncWebCrawler, BrowserConfig, CrawlerRunConfig, CacheMode, AdaptiveConfig, 
@@ -9,6 +11,8 @@ from utils import (extract_urls, extract_image_urls, determine_type, generate_ti
 
 output_mdfile_raw = "./outputs/crawl4ai_output_raw.md"
 output_mdfile_fit = "./outputs/crawl4ai_output_fit.md"
+output_image_path = "./outputs/crawl4ai_output.jpg"
+output_pdf_path = "./outputs/crawl4ai_output.pdf"
 
 test_url_list = []
 test_url_list.append("https://www.hamimall.com.tw/product.php?id=522727&utm_source=hamipoint&utm_medium=productlist_rec&utm_campaign=pointpoint&utm_content=522727")
@@ -21,7 +25,7 @@ ollama_embed = "ollama/qwen3-embedding:latest" # "ollama/qwen3-embedding:latest"
 
 
 async def main():
-    run_option = 2
+    run_option = 7
     test_url_index = 0
     try:
         match run_option:
@@ -248,10 +252,8 @@ async def main():
                     print(f"Multi-crawler run in {end_time:.2f} seconds.")
 
             case 6:
-                print("----- Extract Subject(Type) and Title from URL -----")
-                # Target URL
                 target_url = test_url_list[test_url_index]
-                
+                print("----- Extract Subject(Type) and Title from URL -----")
                 # Instruction
                 query_instruction = "You are a helpful and concise assistant. Please extract the subject and main title of the product or activity of the given content."
                             
@@ -296,6 +298,36 @@ async def main():
                     print(f"Page Type: {json_result[0]['page_type']}")
                     print(f"Page Title: {json_result[0]['page_title']}")
                     print(f"Crawler(LLM Extraction) run in {end_time:.2f} seconds.") 
+
+            case 7:
+                target_url = test_url_list[test_url_index]
+                print("----- Convert URL to Image and PDF -----")
+                run_conf = CrawlerRunConfig(
+                    cache_mode = CacheMode.BYPASS,
+                    wait_for_images=True,
+                    scan_full_page=True,
+                    screenshot=True,
+                    pdf=True
+                )
+                async with AsyncWebCrawler() as crawler:
+                    result = await crawler.arun(
+                        url=target_url,
+                        config=run_conf
+                    )
+                
+                if result.success and result.screenshot:
+                    # 1. Save the screenshot to image file (No good for docling)
+                    image_data = b64decode(result.screenshot) # The screenshot of Crawl4AI is a Base64 string, which needs to be decoded first.
+                    image = Image.open(io.BytesIO(image_data)) # Open image bytes by Pillow (PIL)
+                    image.save(output_image_path)
+                    print(f"[Image] Screenshot of the webpage has been saved to: {output_image_path}")
+                    # 2. Save the screenshot to PDF file (Good for docling)
+                    with open(output_pdf_path, "wb") as f:
+                        f.write(result.pdf)
+                    print(f"[PDF] Screenshot of the webpage has been saved to: {output_pdf_path}")
+
+                else:
+                    print(f"Unable to convert webpage. Error message: {result.error_message}")
 
             case _:
                 print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
