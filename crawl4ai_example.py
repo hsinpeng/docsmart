@@ -316,12 +316,12 @@ async def main():
                     )
                 
                 if result.success and result.screenshot:
-                    # 1. Save the screenshot to image file (No good for docling)
+                    # Save screenshot to image file (Poor quality for docling)
                     image_data = b64decode(result.screenshot) # The screenshot of Crawl4AI is a Base64 string, which needs to be decoded first.
                     image = Image.open(io.BytesIO(image_data)) # Open image bytes by Pillow (PIL)
                     image.save(output_image_path)
                     print(f"[Image] Screenshot of the webpage has been saved to: {output_image_path}")
-                    # 2. Save the screenshot to PDF file (Good for docling)
+                    # Save screenshot to PDF file (Good enough for docling)
                     with open(output_pdf_path, "wb") as f:
                         f.write(result.pdf)
                     print(f"[PDF] Screenshot of the webpage has been saved to: {output_pdf_path}")

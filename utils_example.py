@@ -1,19 +1,14 @@
-import os, time
-from utils import (extract_urls, extract_image_urls, determine_type, generate_title, generate_image_description)
-
-markdown_file = "./outputs/crawl4ai_output_fit.md" # "./outputs/crawl4ai_output_fit.md" "./outputs/crawl4ai_output_raw.md" "./outputs/docling_output.md"
+import time
+from utils import (extract_urls, extract_image_urls, determine_type, generate_title, generate_image_description,
+                   convert_image2pdf)
 
 def main():
-    run_option = 0
+    run_option = 3
     try:
-        if os.path.exists(markdown_file):
-            print(f"Hello. This is utility test. The run_option is {run_option}.")
-        else:
-            print(f"Error: File {markdown_file} does not exist.")
-            return
-
+        print(f"Hello. This is utility test. The run_option is {run_option}.")
         match run_option:
             case 0:
+                markdown_file = "./outputs/crawl4ai_output_fit.md" # "./outputs/crawl4ai_output_fit.md" "./outputs/crawl4ai_output_raw.md" "./outputs/docling_output.md"
                 print("----- Utility Test: extract_urls and extract_image_urls -----")
                 with open(markdown_file, "r", encoding="utf-8") as f:
                     markdown_content = f.read()
@@ -31,6 +26,7 @@ def main():
                         print(url)
 
             case 1:
+                markdown_file = "./outputs/crawl4ai_output_fit.md" # "./outputs/crawl4ai_output_fit.md" "./outputs/crawl4ai_output_raw.md" "./outputs/docling_output.md"
                 print("----- Utility Test: determine_type and generate_title -----")
                 with open(markdown_file, "r", encoding="utf-8") as f:
                     markdown_content = f.read()
@@ -48,6 +44,7 @@ def main():
                 print(f"-----------------------------------------")
             
             case 2:
+                markdown_file = "./outputs/crawl4ai_output_fit.md" # "./outputs/crawl4ai_output_fit.md" "./outputs/crawl4ai_output_raw.md" "./outputs/docling_output.md"
                 print("----- Utility Test: generate_image_description -----")
                 with open(markdown_file, "r", encoding="utf-8") as f:
                     markdown_content = f.read()
@@ -63,6 +60,15 @@ def main():
                 print(f"generate_image_description() in {end_time:.2f} seconds.") 
                 print(f"-----------------------------------------")
 
+            case 3:
+                input_doc_path = "./inputs/crawl4ai_output.png"
+                output_doc_path = "./outputs/crawl4ai_output_png.pdf"
+                print("----- Utility Test: generate_image_description -----")
+                if convert_image2pdf(input_doc_path, output_doc_path):
+                    print(f"File {input_doc_path} has been converted to {output_doc_path}.")
+                else:
+                    print(f"Error: Connot convert {input_doc_path} to PDF.")
+            
             case _:
                 print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
         
