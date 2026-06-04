@@ -23,12 +23,16 @@ def convert_image2pdf(image_path:str, pdf_path:str) -> bool:
     """
     Convert the image file to PDF.
     """
-    if (check_image(image_path)) and (pdf_path.lower().endswith(".pdf")):
-        image = Image.open(image_path) # Open the image file
-        image_rgb = image.convert("RGB") # Convert to RGB (required for JPG to PDF conversion)
-        image_rgb.save(pdf_path, "PDF") # Save as PDF
-        return True
-    else:
+    try:
+        if (check_image(image_path)) and (pdf_path.lower().endswith(".pdf")):
+            image = Image.open(image_path) # Open the image file
+            image_rgb = image.convert("RGB") # Convert to RGB (required for JPG to PDF conversion)
+            image_rgb.save(pdf_path, "PDF") # Save as PDF
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f"{e}")
         return False
 
 def gen_random_string(length:int=10, is_punctuation:bool=False) -> str:
