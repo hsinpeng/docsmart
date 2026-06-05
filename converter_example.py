@@ -1,4 +1,4 @@
-import io, asyncio
+import asyncio, json
 from converter import (url2markdown_crawl4ai, url2markdown_docling)
 
 test_url_list = []
@@ -20,6 +20,8 @@ async def main():
                     print(result.content)
                 else:
                     print(result.message)
+                print("---------- Full Result ----------")
+                print(json.dumps(result, indent=2, ensure_ascii=False))
 
             case 1:
                 target_url = test_url_list[test_url_index]
@@ -28,6 +30,8 @@ async def main():
                     print(result.content)
                 else:
                     print(result.message)
+                print("---------- Full Result ----------")
+                print(json.dumps(result, indent=2, ensure_ascii=False))
 
             case 2:
                 target_url = test_url_list[test_url_index]
@@ -37,6 +41,8 @@ async def main():
                     print(result.content)
                 else:
                     print(result.message)
+                print("---------- Full Result ----------")
+                print(json.dumps(result, indent=2, ensure_ascii=False))
 
             case _:
                 print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)

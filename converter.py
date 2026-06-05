@@ -210,7 +210,7 @@ def pdf2markdown_docling(pdf_path:str, output_file:str, is_ocr:bool=True, image_
             return Result(400, None, f"Error: Unsupported image_mode({image_mode}).")
 
         conv_res.document.save_as_markdown(md_filename, image_mode=image_mode)
-        return Result(200, md_filename, f"Conversion done.")
+        return Result(200, str(md_filename), f"Conversion done.")
 
     except Exception as e:
         return Result(500, None, f"Unknown Error: {e}.")
