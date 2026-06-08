@@ -1,4 +1,4 @@
-import re, requests, base64, random, string
+import os, io, re, requests, base64, random, string
 from PIL import Image
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -9,14 +9,48 @@ ollama_embed = "qwen3-embedding:latest" # "qwen3-embedding:latest" "nomic-embed-
 supported_image_formats = ('.jpg', '.jpeg', '.png')
 
 
-def check_image(image_uri:str) -> bool:
+def check_image_validity(image_uri:str, mode:str="databytes") -> bool:
     """
-    Identify whether the given uri is an image or not.
+    Verify the given uri is a valid image format or not.
+    mode: 'extension' or 'databytes'
     """
-    if image_uri.lower().endswith(supported_image_formats):
+    check_string = None
+    if mode == "extension":
+        check_string = image_uri
+    elif mode == "databytes":
+        if os.path.isfile(image_uri):
+            # 'wb' opens the file in binary mode to write image data
+            with open(image_uri, "rb") as f:
+                data_bytes = f.read()
+        else:
+            response = requests.get(image_uri)
+            # Check if the download was successful
+            if response.status_code == 200:
+                data_bytes = response.content
+            else:
+                print(f"Error: Cannot retrieve {image_uri}, code={response.status_code}!")
+        check_string = "." + get_content_imagetype(data_bytes)
+    else:
+        print("Something wrong!")
+        return False
+
+    if check_string.lower().endswith(supported_image_formats):
         return True
     else:
         return False
+
+
+def get_content_imagetype(image_bytes: bytes) -> str:
+    """
+    Identify the image format of given data bytes
+    """
+    try:
+        image_stream = io.BytesIO(image_bytes)
+        with Image.open(image_stream) as img:
+            # img.format：'JPEG', 'PNG', 'GIF', 'WEBP'
+            return img.format
+    except Exception:
+        return "UNKNOWN"
 
 
 def convert_image2pdf(image_path:str, pdf_path:str) -> bool:
@@ -24,7 +58,7 @@ def convert_image2pdf(image_path:str, pdf_path:str) -> bool:
     Convert the image file to PDF.
     """
     try:
-        if (check_image(image_path)) and (pdf_path.lower().endswith(".pdf")):
+        if (check_image_validity(image_path)) and (pdf_path.lower().endswith(".pdf")):
             image = Image.open(image_path) # Open the image file
             image_rgb = image.convert("RGB") # Convert to RGB (required for JPG to PDF conversion)
             image_rgb.save(pdf_path, "PDF") # Save as PDF
@@ -50,25 +84,27 @@ def encode_image_file(image_path:str):
     """
     Convert the content of the input file into base64 encoded data.
     """
-    if check_image(image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
-    else:
+    with open(image_path, "rb") as image_file:
+        data_bytes = image_file.read()
+    if get_content_imagetype(data_bytes) == "UNKNOWN":
         return None
+    else:
+        return base64.b64encode(data_bytes).decode("utf-8")
 
 
 def encode_image_url(image_url:str):
     """
     Convert the content of the URL into base64 encoded data.
     """
-    if check_image(image_url):
-        response = requests.get(image_url)
-        if response.status_code == 200:
-            return base64.b64encode(response.content).decode("utf-8")
-        else:
+    response = requests.get(image_url)
+    if response.status_code == 200:
+        if get_content_imagetype(response.content) == "UNKNOWN":
             return None
+        else:
+            return base64.b64encode(response.content).decode("utf-8")
     else:
         return None
+
     
 
 def extract_urls_from_file(file_path:str, img_only:bool=False, rm_redundancy:bool=True):
@@ -101,7 +137,7 @@ def extract_image_urls(markdown_text:str, rm_redundancy:bool=True):
     Retrieve all hyperlinks of images in the text and output them as a list.
     """
     url_list = extract_urls(markdown_text, rm_redundancy=rm_redundancy)
-    image_url_list = [url for url in url_list if check_image(url)]
+    image_url_list = [url for url in url_list if check_image_validity(url)]
     return image_url_list
 
 
@@ -178,7 +214,7 @@ def verify_image_by_title(image_url:str, title:str):
     """
     Identify whether the content of an image matches a given title.
     """
-    if not check_image(image_url):
+    if not check_image_validity(image_url, mode="extension"):
         print(f"Error: {image_url} is not an image!")
         return None
 
@@ -208,7 +244,7 @@ def generate_image_description(image_url:str):
     """
     Identify the content of an image and generate text describing that content.
     """
-    if not check_image(image_url):
+    if not check_image_validity(image_url, mode="extension"):
         print(f"Error: {image_url} is not an image!")
         return None
 

@@ -1,9 +1,9 @@
-import time
+import os, time, requests
 from utils import (extract_urls, extract_image_urls, determine_type, generate_title, generate_image_description,
-                   convert_image2pdf)
+                   convert_image2pdf, get_image_type, check_image_validity)
 
 def main():
-    run_option = 3
+    run_option = 5
     try:
         print(f"Hello. This is utility test. The run_option is {run_option}.")
         match run_option:
@@ -68,6 +68,30 @@ def main():
                     print(f"File {input_doc_path} has been converted to {output_doc_path}.")
                 else:
                     print(f"Error: Connot convert {input_doc_path} to PDF.")
+            
+            case 4:
+                data_bytes = None
+                #target_uri = "./inputs/crawl4ai_output.png" #"./inputs/Fan01.pdf"
+                target_uri = "https://pdinfo.senao.com.tw/octopus/contents/a3704041768446f8bb8dd3cfa0f688bc.jpg"
+                if os.path.isfile(target_uri):
+                    # 'wb' opens the file in binary mode to write image data
+                    with open(target_uri, "rb") as f:
+                        data_bytes = f.read()
+                else:
+                    response = requests.get(target_uri)
+                    # Check if the download was successful
+                    if response.status_code == 200:
+                        data_bytes = response.content
+                    else:
+                        print(f"Error: Cannot retrieve {target_uri}, code={response.status_code}!")
+                img_type = get_image_type(data_bytes)
+                print(f"img_type={img_type}")
+            
+            case 5:
+                target_uri = "./inputs/Fan01.jpg" # "./inputs/crawl4ai_output.png" #"./inputs/Fan01.pdf"
+                #target_uri = "https://supabase.com/" # "https://pdinfo.senao.com.tw/octopus/contents/a3704041768446f8bb8dd3cfa0f688bc.jpg"
+                result = check_image_validity(target_uri) #, mode="extension")
+                print(f"Result={result}")
             
             case _:
                 print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
