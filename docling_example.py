@@ -14,7 +14,7 @@ from docling.datamodel.pipeline_options import (
     AcceleratorOptions
 )
 from docling_core.types.doc import ImageRefMode, PictureItem, TableItem
-from utils import check_image, gen_random_string, convert_image2pdf
+from utils import check_image_validity, gen_random_string, convert_image2pdf
 
 output_mdfile_docling = "./outputs/docling_output.md"
 temporary_pdf = f"./outputs/{gen_random_string(length=15)}.pdf"
@@ -183,7 +183,7 @@ async def main():
                 output_prefix = "./outputs/ocr"
 
                 # Image conversion for PdfPipeline
-                if check_image(input_doc_path):
+                if check_image_validity(input_doc_path):
                     if convert_image2pdf(input_doc_path, temporary_pdf):
                         input_doc_path = temporary_pdf
                     else:

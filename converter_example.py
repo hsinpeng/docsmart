@@ -9,40 +9,40 @@ test_url_list.append("https://www.momoshop.com.tw/main/Main.jsp")
 
 
 async def main():
-    run_option = 1
+    run_option = 0
     test_url_index = 0
     try:
         match run_option:
             case 0:
                 target_url = test_url_list[test_url_index]
+                ouput_file = "./outputs/url2markdown_crawl4ai.md"
                 result = await url2markdown_crawl4ai(target_url, mode_type="filter")
                 if result.code == 200:
-                    print(result.content)
+                    #print(result.content)
+                    print(f"----- url2markdown_crawl4ai length: {len(result.content)} -----")
+                    with open(ouput_file, "w", encoding="utf-8") as f:
+                        f.write(result.content)
+                    print(f"Save the conversion result to {ouput_file}.")
                 else:
-                    print(result.message)
-                print("---------- Full Result ----------")
-                print(json.dumps(result, indent=2, ensure_ascii=False))
+                    print(f"url2markdown_crawl4ai fail. Error message: {result.message}")
 
             case 1:
                 target_url = test_url_list[test_url_index]
+                ouput_file = "./outputs/url2markdown_docling.md"
                 result = await url2markdown_docling(target_url, output_file="./outputs/pdf/url2markdown_docling.md")
                 if result.code == 200:
-                    print(result.content)
+                    print(f"Save the conversion result to {result.content}.")
                 else:
-                    print(result.message)
-                print("---------- Full Result ----------")
-                print(json.dumps(result, indent=2, ensure_ascii=False))
+                    print(f"url2markdown_docling fail. Error message: {result.message}")
 
             case 2:
                 target_url = test_url_list[test_url_index]
                 result = await url2markdown_docling(target_url, output_file="./outputs/image/url2markdown_docling.md",
                                                     intermediate_type="image")
                 if result.code == 200:
-                    print(result.content)
+                    print(f"Save the conversion result to {result.content}.")
                 else:
-                    print(result.message)
-                print("---------- Full Result ----------")
-                print(json.dumps(result, indent=2, ensure_ascii=False))
+                    print(f"url2markdown_docling fail. Error message: {result.message}")
 
             case _:
                 print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)

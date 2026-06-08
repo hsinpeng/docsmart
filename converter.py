@@ -16,7 +16,7 @@ from docling.datamodel.pipeline_options import (
     TableStructureOptions,
     AcceleratorOptions
 )
-from utils import (gen_random_string, check_image, convert_image2pdf)
+from utils import (gen_random_string, check_image_validity, convert_image2pdf)
 
 # Check operating system (OS)
 if sys.platform.startswith('win'):

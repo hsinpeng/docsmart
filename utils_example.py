@@ -1,6 +1,6 @@
 import os, time, requests
 from utils import (extract_urls, extract_image_urls, determine_type, generate_title, generate_image_description,
-                   convert_image2pdf, get_image_type, check_image_validity)
+                   convert_image2pdf, get_content_imagetype, check_image_validity)
 
 def main():
     run_option = 5
@@ -8,7 +8,7 @@ def main():
         print(f"Hello. This is utility test. The run_option is {run_option}.")
         match run_option:
             case 0:
-                markdown_file = "./outputs/crawl4ai_output_fit.md" # "./outputs/crawl4ai_output_fit.md" "./outputs/crawl4ai_output_raw.md" "./outputs/docling_output.md"
+                markdown_file = "./outputs/url2markdown_crawl4ai.md"
                 print("----- Utility Test: extract_urls and extract_image_urls -----")
                 with open(markdown_file, "r", encoding="utf-8") as f:
                     markdown_content = f.read()
@@ -26,7 +26,7 @@ def main():
                         print(url)
 
             case 1:
-                markdown_file = "./outputs/crawl4ai_output_fit.md" # "./outputs/crawl4ai_output_fit.md" "./outputs/crawl4ai_output_raw.md" "./outputs/docling_output.md"
+                markdown_file = "./outputs/url2markdown_crawl4ai.md"
                 print("----- Utility Test: determine_type and generate_title -----")
                 with open(markdown_file, "r", encoding="utf-8") as f:
                     markdown_content = f.read()
@@ -84,14 +84,14 @@ def main():
                         data_bytes = response.content
                     else:
                         print(f"Error: Cannot retrieve {target_uri}, code={response.status_code}!")
-                img_type = get_image_type(data_bytes)
-                print(f"img_type={img_type}")
+                image_type = get_content_imagetype(data_bytes)
+                print(f"Image type: {image_type}")
             
             case 5:
                 target_uri = "./inputs/Fan01.jpg" # "./inputs/crawl4ai_output.png" #"./inputs/Fan01.pdf"
                 #target_uri = "https://supabase.com/" # "https://pdinfo.senao.com.tw/octopus/contents/a3704041768446f8bb8dd3cfa0f688bc.jpg"
                 result = check_image_validity(target_uri) #, mode="extension")
-                print(f"Result={result}")
+                print(f"Result: {result}")
             
             case _:
                 print(f"Error: Invalid run_option ({run_option})!") # Wildcard (default case)
