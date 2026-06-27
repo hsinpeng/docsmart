@@ -3,10 +3,12 @@ name = "docsmart"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "crawl4ai>=0.8.6",
+    "ddgs>=9.14.4",
     "docling[easyocr]>=2.95.0",
+    "langchain>=1.3.11",
     "langchain-ollama>=1.1.0",
     "scikit-learn>=1.9.0",
 ]
