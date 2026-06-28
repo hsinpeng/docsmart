@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from ddgs import DDGS
 
 ollama_server = "http://localhost:11434"
-ollama_model = "qwen3.5:9b" # "lfm2.5:8b" "granite4.1:8b"
+ollama_model = "lfm2.5:8b" # "qwen3.5:9b" "lfm2.5:8b" "granite4.1:8b"
 ollama_embed = "qwen3-embedding:8b" # "nomic-embed-text-v2-moe:latest"
 
 
