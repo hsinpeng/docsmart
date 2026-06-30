@@ -23,7 +23,7 @@ This repository contains a growing collection of **out-of-the-box tools** and **
 
 ## 💻 Tech Stack
 * **Project Manager**: [astral-sh/uv](https://github.com/astral-sh/uv "uv GitHub")
-* **Language**: [Python 3.12+](https://python.org "Python Official Site")
+* **Language**: [Python 3.14+](https://python.org "Python Official Site")
 * **Web Scraping**: [Crawl4AI](https://github.com/unclecode/crawl4ai "Crawl4AI GitHub")
 * **Document Processing**: [Docling](https://github.com/docling-project/docling "Docling GitHub")
 * **LLM Server**: [Ollama](https://ollama.com/ "Ollama Official Site")
@@ -47,8 +47,8 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 1.2 Install python via uv
 ```bash
-# Python 3.12+ Installation
-uv python install 3.12
+# Python 3.14+ Installation
+uv python install 3.14
 
 # Verification
 uv python list
