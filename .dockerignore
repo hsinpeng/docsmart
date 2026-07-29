@@ -1,0 +1,10 @@
+# Exclude the project virtual environment from image builds
+.venv
+__pycache__
+outputs
+.gitignore
+converter_example.py
+crawl4ai_example.py
+docling_example.py
+ollama_example.py
+main.py
